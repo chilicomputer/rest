@@ -17,10 +17,11 @@
 
 	define('rest/client/xdr-test', function (require) {
 
-		var client, rest, flickrUrl;
+		var client, rest, responsePromise, flickrUrl;
 
 		client = require('rest/client/xdr');
 		rest = require('rest');
+		responsePromise = require('rest/util/responsePromise');
 
 		flickrUrl = 'http://api.flickr.com/services/rest/?method=flickr.test.echo&api_key=95f41bfa4faa0f43bf7c24795eabbed4&format=rest';
 
@@ -114,6 +115,9 @@
 			},
 			'should support interceptor chaining': function () {
 				assert(typeof client.chain === 'function');
+			},
+			'should return a ResponsePromise': function () {
+				assert(client() instanceof responsePromise.ResponsePromise);
 			}
 		});
 

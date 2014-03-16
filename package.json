@@ -32,7 +32,7 @@
 		}
 	],
 	"dependencies": {
-		"when": "~2"
+		"when": "cujojs/when#dev"
 	},
 	"devDependencies": {
 		"wire": "~0.9",
