@@ -107,6 +107,9 @@
 					return client(flickrUrl).then(function (response) {
 						assert.same(flickrUrl, response.request.path);
 					}).otherwise(fail);
+				},
+				'should return a ResponsePromise': function () {
+					assert(client() instanceof responsePromise.ResponsePromise);
 				}
 			},
 			'should not be the default client': function () {
@@ -115,9 +118,6 @@
 			},
 			'should support interceptor chaining': function () {
 				assert(typeof client.chain === 'function');
-			},
-			'should return a ResponsePromise': function () {
-				assert(client() instanceof responsePromise.ResponsePromise);
 			}
 		});
 
