@@ -27,16 +27,6 @@
 			'should resolve the response entity': function () {
 				var response = responsePromise(when({ entity: 43 }));
 
-				return response.entity(
-					function (entity) {
-						assert.equals(43, entity);
-					},
-					fail
-				);
-			},
-			'should resolve the response entity as a promise': function () {
-				var response = responsePromise(when({ entity: 43 }));
-
 				return response.entity().then(
 					function (entity) {
 						assert.equals(43, entity);
@@ -45,16 +35,6 @@
 				);
 			},
 			'should resolve the response entity for a rejected promise': function () {
-				var response = responsePromise(when.reject({ entity: 43 }));
-
-				return response.entity(
-					fail,
-					function (entity) {
-						assert.equals(43, entity);
-					}
-				);
-			},
-			'should resolve the response entity for a rejceted promise as a rejected promise': function () {
 				var response = responsePromise(when.reject({ entity: 43 }));
 
 				return response.entity().then(
@@ -68,16 +48,6 @@
 			'should resolve the response status code': function () {
 				var response = responsePromise(when({ status: { code: 200 } }));
 
-				return response.status(
-					function (status) {
-						assert.equals(200, status);
-					},
-					fail
-				);
-			},
-			'should resolve the response status code as a promise': function () {
-				var response = responsePromise(when({ status: { code: 200 } }));
-
 				return response.status().then(
 					function (status) {
 						assert.equals(200, status);
@@ -86,16 +56,6 @@
 				);
 			},
 			'should resolve the response status code for a rejected promise': function () {
-				var response = responsePromise(when.reject({ status: { code: 200 } }));
-
-				return response.status(
-					fail,
-					function (status) {
-						assert.equals(200, status);
-					}
-				);
-			},
-			'should resolve the response status code for a rejcted promise as a rejected promise': function () {
 				var response = responsePromise(when.reject({ status: { code: 200 } }));
 
 				return response.status().then(
@@ -110,17 +70,6 @@
 				var headers = { 'Content-Type': 'text/plain' };
 				var response = responsePromise(when({ headers: headers }));
 
-				return response.headers(
-					function (_headers) {
-						assert.same(headers, _headers);
-					},
-					fail
-				);
-			},
-			'should resolve the response headers as a promise': function () {
-				var headers = { 'Content-Type': 'text/plain' };
-				var response = responsePromise(when({ headers: headers }));
-
 				return response.headers().then(
 					function (_headers) {
 						assert.same(headers, _headers);
@@ -129,17 +78,6 @@
 				);
 			},
 			'should resolve the response headers for a rejected promise': function () {
-				var headers = { 'Content-Type': 'text/plain' };
-				var response = responsePromise(when.reject({ headers: headers }));
-
-				return response.headers(
-					fail,
-					function (_headers) {
-						assert.same(headers, _headers);
-					}
-				);
-			},
-			'should resolve the response headers for a rejected promise as a rejected promise': function () {
 				var headers = { 'Content-Type': 'text/plain' };
 				var response = responsePromise(when.reject({ headers: headers }));
 
@@ -155,30 +93,6 @@
 				var headers = { 'Content-Type': 'text/plain' };
 				var response = responsePromise(when({ headers: headers }));
 
-				return response.header(
-					'Content-Type',
-					function (_header) {
-						assert.same(headers['Content-Type'], _header);
-					},
-					fail
-				);
-			},
-			'should resolve a response header, by the normalized name': function () {
-				var headers = { 'Content-Type': 'text/plain' };
-				var response = responsePromise(when({ headers: headers }));
-
-				return response.header(
-					'content-type',
-					function (_header) {
-						assert.same(headers['Content-Type'], _header);
-					},
-					fail
-				);
-			},
-			'should resolve a response header as a promise': function () {
-				var headers = { 'Content-Type': 'text/plain' };
-				var response = responsePromise(when({ headers: headers }));
-
 				return response.header('Content-Type').then(
 					function (_header) {
 						assert.same(headers['Content-Type'], _header);
@@ -190,23 +104,22 @@
 				var headers = { 'Content-Type': 'text/plain' };
 				var response = responsePromise(when.reject({ headers: headers }));
 
-				return response.header(
-					'Content-Type',
+				return response.header('Content-Type').then(
 					fail,
 					function (_header) {
 						assert.same(headers['Content-Type'], _header);
 					}
 				);
 			},
-			'should resolve a response header for a rejected promise as a rejected promise': function () {
+			'should resolve a response header, by the normalized name': function () {
 				var headers = { 'Content-Type': 'text/plain' };
-				var response = responsePromise(when.reject({ headers: headers }));
+				var response = responsePromise(when({ headers: headers }));
 
-				return response.header('Content-Type').then(
-					fail,
+				return response.header('content-type').then(
 					function (_header) {
 						assert.same(headers['Content-Type'], _header);
-					}
+					},
+					fail
 				);
 			}
 

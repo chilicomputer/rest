@@ -14,9 +14,6 @@
 			when = require('when'),
 			normalizeHeaderName = require('./normalizeHeaderName');
 
-		function defaultResolve(arg) { return arg; }
-		function defaultReject(arg) { return when.reject(arg); }
-
 		// extend ResponsePromise from Promise
 		function ResponsePromise() {
 			return Promise.apply(this, arguments);
@@ -25,90 +22,53 @@
 
 		// augment ResponsePromise with HTTP Response specific methods
 
+		function property(promise, name) {
+			return promise.then(
+				function (value) {
+					return value && value[name];
+				},
+				function (value) {
+					return when.reject(value && value[name]);
+				}
+			);
+		}
+
 		/**
 		 * Obtain the response entity
 		 *
-		 * @param {Function} [onFulfilled] callback to receive the entity on promise fulfillment
-		 * @param {Function} [onRejected] callback to receive the entity on promise rejection
 		 * @returns {Promise} for the response entity
 		 */
-		ResponsePromise.prototype.entity = function entity(onFulfilled, onRejected) {
-			onFulfilled = onFulfilled || defaultResolve;
-			onRejected = onRejected || defaultReject;
-
-			return this.then(
-				function (response) {
-					return onFulfilled(response && response.entity);
-				},
-				function (response) {
-					return onRejected(response && response.entity);
-				}
-			);
+		ResponsePromise.prototype.entity = function entity() {
+			return property(this, 'entity');
 		};
 
 		/**
 		 * Obtain the response status
 		 *
-		 * @param {Function} [onFulfilled] callback to receive the status on promise fulfillment
-		 * @param {Function} [onRejected] callback to receive the status on promise rejection
 		 * @returns {Promise} for the response status
 		 */
-		ResponsePromise.prototype.status = function status(onFulfilled, onRejected) {
-			onFulfilled = onFulfilled || defaultResolve;
-			onRejected = onRejected || defaultReject;
-
-			return this.then(
-				function (response) {
-					return onFulfilled(response && response.status && response.status.code);
-				},
-				function (response) {
-					return onRejected(response && response.status && response.status.code);
-				}
-			);
+		ResponsePromise.prototype.status = function status() {
+			return property(property(this, 'status'), 'code');
 		};
 
 		/**
 		 * Obtain the response headers map
 		 *
-		 * @param {Function} [onFulfilled] callback to receive the headers map on promise fulfillment
-		 * @param {Function} [onRejected] callback to receive the headers map on promise rejection
 		 * @returns {Promise} for the response headers map
 		 */
-		ResponsePromise.prototype.headers = function headers(onFulfilled, onRejected) {
-			onFulfilled = onFulfilled || defaultResolve;
-			onRejected = onRejected || defaultReject;
-
-			return this.then(
-				function (response) {
-					return onFulfilled(response && response.headers);
-				},
-				function (response) {
-					return onRejected(response && response.headers);
-				}
-			);
+		ResponsePromise.prototype.headers = function headers() {
+			return property(this, 'headers');
 		};
 
 		/**
 		 * Obtain a specific response header
 		 *
 		 * @param {String} headerName the header to retrieve
-		 * @param {Function} [onFulfilled] callback to receive the header value on promise fulfillment
-		 * @param {Function} [onRejected] callback to receive the header value on promise rejection
 		 * @returns {Promise} for the response header's value
 		 */
-		ResponsePromise.prototype.header = function header(headerName, onFulfilled, onRejected) {
+		ResponsePromise.prototype.header = function header(headerName) {
 			headerName = normalizeHeaderName(headerName);
-			onFulfilled = onFulfilled || defaultResolve;
-			onRejected = onRejected || defaultReject;
-
-			return this.then(
-				function (response) {
-					return onFulfilled(response && response.headers && response.headers[headerName]);
-				},
-				function (response) {
-					return onRejected(response && response.headers && response.headers[headerName]);
-				}
-			);
+			return property(this.headers(), headerName);
 		};
 
 		/**
