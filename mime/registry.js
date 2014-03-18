@@ -12,7 +12,12 @@
 
 		var when, registry;
 
+		var plain, json, form;
+		// chillicomputer:
+		// avoid sync-loading, so require plain and json plugins here.
 		when = require('when');
+		plain = require( './type/text/plain' );
+		json = require( './type/application/json' );
 
 		function normalizeMime(mime) {
 			// TODO we're dropping info that may be important
@@ -113,8 +118,8 @@
 		registry = new Registry(typeof define === 'function' && define.amd ? loadAMD : loadNode);
 
 		// include text/plain and application/json by default
-		registry.register('text/plain', require('./type/text/plain'));
-		registry.register('application/json', require('./type/application/json'));
+		registry.register('text/plain', plain);
+		registry.register('application/json', json);
 
 		return registry;
 
